@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dash Prints – Custom Branded Apparel</title>
+    <meta name="description" content="Dash Prints provides custom branded t‑shirts, polos, and hoodies for businesses, schools, and organizations.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="images/Logo_transparent.png" type="image/png">
+</head>
+<body>
+    <!-- Header / Navigation -->
+    <header class="header">
+        <div class="header-inner">
+            <a href="/" class="brand">
+                <img class="logo" src="images/business_logo.png" alt="Dash Prints logo">
+                <div class="brand-text">
+                    <span class="brand-name">Dash Prints</span>
+                    <span class="brand-tagline">Custom Branded Apparel</span>
+                </div>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+                <span class="nav-toggle-bar"></span>
+            </button>
+            <nav class="main-nav">
+                <ul class="top">
+                    <li class="horizontal home"><a href="#top">Home</a></li>
+                    <li class="horizontal"><a href="#services">Services</a></li>
+                    <li class="horizontal"><a href="#industries">Industries</a></li>
+                    <li class="horizontal"><a href="#about">About Us</a></li>
+                    <li class="horizontal"><a href="#contact" class="nav-cta">Request a Quote</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main id="top">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Custom Apparel for Teams, Events &amp; Brands</h1>
+                <p>
+                    Dash Prints partners with businesses, schools, and organizations to deliver
+                    high‑quality custom shirts, polos, and hoodies — on time and on budget.
+                </p>
+                <div class="hero-actions">
+                    <a href="#contact" class="button">Request a Bulk Quote</a>
+                    <a href="#services" class="button button-ghost">View Services</a>
+                </div>
+                <ul class="hero-highlights">
+                    <li>Low minimums &amp; flexible quantities</li>
+                    <li>Professional design support included</li>
+                    <li>Fast turnaround &amp; reliable delivery</li>
+                </ul>
+            </div>
+            <div class="hero-image">
+                <img class="mainpic" src="images/hero-stack.png" alt="Dash Prints branded stack of folded custom printed shirts">
+            </div>
+        </section>
+
+        <!-- Services / Products Section -->
+        <section class="services" id="services">
+            <h2>What We Print</h2>
+            <p class="section-intro">
+                Choose the right apparel for your staff, event, or promo campaign.
+                We’ll handle the printing from start to finish.
+            </p>
+            <div class="products">
+                <article class="product-card">
+                    <img src="images/custom_tshirt.png" alt="Custom printed t‑shirt">
+                    <h3>Custom T‑Shirts</h3>
+                    <p>Perfect for events, volunteer teams, and branded giveaways.</p>
+                </article>
+                <article class="product-card">
+                    <img src="images/custom_polo.png" alt="Custom branded polo shirt">
+                    <h3>Polos &amp; Staff Uniforms</h3>
+                    <p>Give your front‑line team a clean, professional branded look.</p>
+                </article>
+                <article class="product-card">
+                    <img src="images/custom_hoodie.png" alt="Custom branded hoodie">
+                    <h3>Hoodies &amp; Outerwear</h3>
+                    <p>Keep your team comfortable while showcasing your brand.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- Industries / B2B Focus -->
+        <section class="industries" id="industries">
+            <h2>Who We Partner With</h2>
+            <p class="section-intro">
+                We specialize in business‑to‑business projects and bulk orders.
+            </p>
+            <div class="industries-grid">
+                <article class="industry-card">
+                    <h3>Businesses &amp; Corporate Teams</h3>
+                    <p>Branded apparel for staff uniforms, company swag, and client gifts.</p>
+                </article>
+                <article class="industry-card">
+                    <h3>Schools &amp; Sports Programs</h3>
+                    <p>Team shirts, spirit wear, and event merchandise for every season.</p>
+                </article>
+                <article class="industry-card">
+                    <h3>Events &amp; Nonprofits</h3>
+                    <p>Custom shirts for fundraisers, conferences, and community events.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about" id="about">
+            <h2>Why Dash Prints</h2>
+            <p class="section-intro">
+                We combine quality printing, responsive communication, and reliable delivery
+                so you can focus on running your organization — not chasing shirt orders.
+            </p>
+            <ul class="about-list">
+                <li><strong>Quality Guaranteed:</strong> We use professional‑grade inks and garments selected for durability and comfort.</li>
+                <li><strong>Clear, Simple Pricing:</strong> Transparent quotes with no hidden fees.</li>
+                <li><strong>Local Service, Professional Results:</strong> A small, dedicated team that treats your brand like our own.</li>
+            </ul>
+        </section>
+
+        <!-- Reviews Section -->
+        <section class="reviews" id="reviews">
+            <h2>Client Feedback</h2>
+            <p class="section-intro">Here’s what our clients say about working with Dash Prints.</p>
+            <div class="review-card">
+                <p class="review-text" style="padding-left: 4rem; padding-right: 4rem;">
+                    “Dash Prints did an amazing job with our apparel. The quality was outstanding,
+                    the delivery was fast, and the customer service was top‑tier. Highly recommended!”
+                </p>
+                <p class="review-author">— chimpum pollo</p>
+            </div>
+        </section>
+
+        <!-- Contact / Quote Form -->
+        <section class="form" id="contact">
+            <form action="/submit" method="post" enctype="multipart/form-data" class="contact-form">
+                <h2>Request a Quote</h2>
+                <p>
+                    Tell us about your project — quantities, deadlines, and apparel type.
+                    We’ll respond within one business day.
+                </p>
+
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="company">Company / Organization</label>
+                <input type="text" id="company" name="company" required>
+
+                <label for="email">Business Email</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" name="phone">
+
+                <label for="project-details">Project Details</label>
+                <textarea id="project-details" name="project_details" rows="4" placeholder="Example: 100 unisex t‑shirts for a company event in April, needed by March 30."></textarea>
+
+                <label for="artwork_file">Upload Artwork or Logo (optional)</label>
+                <input type="file" id="artwork_file" name="artwork_file" accept=".png,.jpg,.jpeg">
+
+                <button type="submit" class="button">Submit Request</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <p class="footer-social">
+                <a href="https://facebook.com/DashPrintsLLC.services" aria-label="Dash Prints on Facebook" target="_blank" rel="noopener noreferrer">
+                    <img src="images/facebook_logo.png" alt="Facebook icon" width="50">
+                </a>
+                <a href="https://instagram.com/dashprintsllc" aria-label="Dash Prints on Instagram" target="_blank" rel="noopener noreferrer">
+                    <img src="images/instagram_logo.png" alt="Instagram icon" width="50">
+                </a>
+            </p>
+        </div>
+        <div class="footer-links">
+            <p>
+                <a href="#top">Home</a>
+                <a href="#services">Services</a>
+                <a href="#industries">Industries</a>
+                <a href="#about">About Us</a>
+                <a href="#contact">Contact</a>
+            </p>
+            <p>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+            </p>
+        </div>
+        <p class="footer-copy">
+            &copy; <!-- Current year can be updated dynamically in the future --> Dash Prints. All rights reserved.
+        </p>
+    </footer>
+</footer>
+    <script>
+        // Simple mobile nav toggle
+        (function () {
+            const navToggle = document.querySelector('.nav-toggle');
+            const mainNav = document.querySelector('.main-nav');
+            if (navToggle && mainNav) {
+                navToggle.addEventListener('click', function () {
+                    mainNav.classList.toggle('nav-open');
+                    navToggle.classList.toggle('nav-open');
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

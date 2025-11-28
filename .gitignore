@@ -1,0 +1,16 @@
+# Do NOT upload secrets
+.env
+
+# Do NOT upload image working files
+PSD images/
+
+# Do NOT upload dynamic uploads
+uploads/
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# macOS junk files
+.DS_Store
+images/.DS_Store
