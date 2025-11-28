@@ -1,16 +1,14 @@
 from flask import Flask, request, render_template_string, send_from_directory
-import smtplib
-from email.message import EmailMessage
 import os
 import mimetypes
+import base64
+import requests
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
 EMAIL_USER = os.environ.get("EMAIL_USER", "dashprintsllc@gmail.com")
-EMAIL_PASS = os.environ.get("EMAIL_PASS")
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY")
 
 # Maximum upload size: 10 MB
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
@@ -82,62 +80,133 @@ def submit():
         saved_filepath = os.path.join(UPLOADS_DIR, safe_name)
         uploaded_file.save(saved_filepath)
 
-    # Build email
-    msg = EmailMessage()
-    msg["Subject"] = f"TEST – New Quote Request from {name} – {company}"
-    msg["From"] = EMAIL_USER
-    msg["To"] = EMAIL_USER
+    # Build email content for SendGrid
+    subject = f"New Quote Request from {name} – {company}".strip(" –")
+    html_content = f"""
+        <p>New quote request from <strong>Dash Prints Website</strong>:</p>
+        <p><strong>Name:</strong> {name or ""}</p>
+        <p><strong>Company:</strong> {company or ""}</p>
+        <p><strong>Email:</strong> {email or ""}</p>
+        <p><strong>Phone:</strong> {phone or ""}</p>
+        <p><strong>Project Details:</strong><br>{(details or "").replace(chr(10), "<br>")}</p>
+    """
 
-    body = f"""
-New quote request from Dash Prints Website:
-
-Name: {name}
-Company: {company}
-Email: {email}
-Phone: {phone}
-
-Project Details:
-{details}
-"""
-    msg.set_content(body)
+    # Build SendGrid v3 API payload
+    payload = {
+        "personalizations": [
+            {
+                "to": [{"email": EMAIL_USER}],
+                "subject": subject,
+            }
+        ],
+        "from": {"email": EMAIL_USER},
+        "content": [
+            {
+                "type": "text/html",
+                "value": html_content,
+            }
+        ],
+    }
 
     # Attach uploaded artwork if present and saved
     if saved_filepath and saved_filename:
         try:
             with open(saved_filepath, "rb") as f:
                 file_data = f.read()
-            maintype, subtype = "application", "octet-stream"
+            encoded_file = base64.b64encode(file_data).decode()
+
             mime_type, _ = mimetypes.guess_type(saved_filename)
-            if mime_type:
-                maintype, subtype = mime_type.split("/", 1)
-            msg.add_attachment(file_data, maintype=maintype, subtype=subtype, filename=saved_filename)
+            if not mime_type:
+                mime_type = "application/octet-stream"
+
+            payload.setdefault("attachments", []).append(
+                {
+                    "content": encoded_file,
+                    "filename": saved_filename,
+                    "type": mime_type,
+                    "disposition": "attachment",
+                }
+            )
         except Exception:
             # If anything goes wrong with the attachment, continue without it
             pass
 
-    # Send email using Gmail SMTP
+    # Send email using SendGrid v3 API via HTTPS
+    if not SENDGRID_API_KEY:
+        print("Email error: SENDGRID_API_KEY is not set")
+        return render_template_string(f"""
+            <!DOCTYPE html>
+            <html lang=\\"en\\">
+            <head>
+                <meta charset=\\"UTF-8\\">
+                <title>Error – Dash Prints</title>
+                <link rel=\\"stylesheet\\" href=\\"style.css\\">
+            </head>
+            <body>
+                <main class=\\"legal-page\\">
+                    <h1>Something went wrong</h1>
+                    <p>Email service is not configured correctly. Please contact us directly at <a href=\\"mailto:{EMAIL_USER}\\">{EMAIL_USER}</a>.</p>
+                    <p><a href=\\"/\\">← Back to Home</a></p>
+                </main>
+            </body>
+            </html>
+        """)
+
     try:
-        print("📡 DEBUG: Connecting to Gmail SMTP...")
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()
-            print("🔐 DEBUG: TLS started, logging in...")
-            server.login(EMAIL_USER, EMAIL_PASS)
-            print(f"✅ DEBUG: Logged in as {EMAIL_USER}, preparing to send email...")
-            print("📤 DEBUG: Attempting to send owner email...")
-            server.send_message(msg)
+        response = requests.post(
+            "https://api.sendgrid.com/v3/mail/send",
+            headers={
+                "Authorization": f"Bearer {SENDGRID_API_KEY}",
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=10,  # seconds
+        )
+        print(f"✅ DEBUG: SendGrid HTTP status: {response.status_code}")
+        if response.status_code >= 400:
+            print(f"SendGrid error body: {response.text}")
 
         # Thank-you page returned directly
         return render_template_string("""
             <!DOCTYPE html>
             <html lang=\"en\">
             <head>
-                <meta charset=\"UTF-8\">\n                <title>Thank You – Dash Prints</title>
-                <link rel=\"stylesheet\" href=\"style.css\">\n            </head>
+                <meta charset=\"UTF-8\">
+                <title>Thank You – Dash Prints</title>
+                <link rel=\"stylesheet\" href=\"style.css\">
+            </head>
             <body>
-                <main class=\"legal-page\">\n                    <h1>Thank you!</h1>\n                    <p>Your quote request was successfully sent. We will contact you within one business day.</p>\n                    <p><a href=\"/\">← Back to Home</a></p>\n                </main>\n            </body>\n            </html>
+                <main class=\"legal-page\">
+                    <h1>Thank you!</h1>
+                    <p>Your quote request was successfully sent. We will contact you within one business day.</p>
+                    <p><a href=\"/\">← Back to Home</a></p>
+                </main>
+            </body>
+            </html>
         """)
     except Exception as e:
-        return f"An error occurred while sending your request: {e}"
+        print(f"Email error: {e}")
+        return render_template_string(f"""
+            <!DOCTYPE html>
+            <html lang=\\"en\\">
+            <head>
+                <meta charset=\\"UTF-8\\">
+                <title>Error – Dash Prints</title>
+                <link rel=\\"stylesheet\\" href=\\"style.css\\">
+            </head>
+            <body>
+                <main class=\\"legal-page\\">
+                    <h1>Something went wrong</h1>
+                    <p>We weren't able to send your request by email. Please try again in a few minutes or contact us directly at <a href=\\"mailto:{EMAIL_USER}\\">{EMAIL_USER}</a>.</p>
+                    <p><a href=\\"/\\">← Back to Home</a></p>
+                </main>
+            </body>
+            </html>
+        """)
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('images', 'Logo_transparent.png', mimetype='image/png')
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
